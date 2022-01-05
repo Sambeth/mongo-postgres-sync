@@ -8,9 +8,18 @@ services:
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
       - MONGO_INITDB_DATABASE=development
-      - MONGO_INITDB_USER=mongodb
-      - MONGO_INITDB_PWD=mongodb
     ports:
       - 27017:27017
+
+  postgresdb:
+    image: postgres:14.1
+    container_name: postgresdb
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 6543:5432
