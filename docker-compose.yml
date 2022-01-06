@@ -6,10 +6,18 @@ services:
     container_name: mongodb
     hostname: mongodb
     restart: always
+    volumes:
+      - ./scripts/mongo/init/:/docker-entrypoint-initdb.d
+      - ./scripts/mongo/seed/:/home/mongodb/seed
+      - ./mongo/sample_data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=rootpassword
       - MONGO_INITDB_DATABASE=development
+      - MONGO_INITDB_USER=mongodb
+      - MONGO_INITDB_PWD=mongodb
+      - DB_COLLECTION_NAME=sample
+      - MONGO_HOSTNAME=$MONGO_HOSTNAME
     ports:
       - 27017:27017
 
