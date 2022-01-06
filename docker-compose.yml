@@ -21,6 +21,13 @@ services:
     ports:
       - 27017:27017
 
+  # meltano:
+  #   build: 
+  #     context: ./meltano
+  #   container_name: meltano
+  #   volumes:
+  #     - ./meltano/:/project
+
   postgresdb:
     image: postgres:14.1
     container_name: postgresdb
