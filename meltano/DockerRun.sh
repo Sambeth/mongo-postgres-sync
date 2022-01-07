@@ -3,14 +3,6 @@
 # Settings
 DOCKER_IMAGE="meltano/meltano:latest"
 PROJECT_NAME=${PROJECT_NAME}
-# VOLUME=${VOLUME}
-# HTTPS_PORT=${HTTPS_PORT}
-# CONTAINER_HOSTNAME=${CONTAINER_HOSTNAME}
-# SOCKET_PORT=${SOCKET_PORT:-10001}
-# KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
-# TRUSTSTORE_PASSWORD=${TRUSTSTORE_PASSWORD}
-# DNS=${DNS}
-# HOST_CERTIFICATES_DIRECTORY="/home/certificates"
 
 docker run \
     -v $(pwd):/projects \
@@ -28,7 +20,24 @@ docker run \
         $DOCKER_IMAGE add loader target-postgres
 
 docker run \
-        -p 8080:5000 \
+        --rm \
+        --network=mongo-postres-sync \
+        -p 8086:5000 \
         -v $(pwd):/projects \
         -w /projects \
-        $DOCKER_IMAGE ui
+        $DOCKER_IMAGE --log-level=debug ui
+
+# enables you select the entities to focus on
+# docker run -v $(pwd):/projects -w /projects meltano/meltano:latest select tap-mongodb --list --all
+
+# set replication method for all entities
+# docker run -v $(pwd):/projects -w /projects meltano/meltano:latest config tap-mongodb set _metadata '*' replication-method LOG_BASED
+
+# set replication method key
+# docker run -v $(pwd):/projects -w /projects meltano/meltano:latest config tap-mongodb set _metadata '*' replication-key id
+
+# verify stream metadata
+# docker run -v $(pwd):/projects -w /projects meltano/meltano:latest invoke --dump=catalog tap-mongodb
+
+# run el pipeline
+# docker run -v $(pwd):/projects -w /projects meltano/meltano:latest elt tap-mongodb target-postgres --job_id=mongodb-to-postgres
